@@ -9,7 +9,6 @@ class Solution(object):
                     pairs+=1
         return pairs
 
-
 nums = [31,25,72,79,74]
 solution = Solution()
 print(solution.countBeautifulPairs(nums))
