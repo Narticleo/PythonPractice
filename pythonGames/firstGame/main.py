@@ -59,22 +59,30 @@ class Battleship(pg.sprite.Sprite):
 class Meteorite(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
-        self.image = img_meteorite
+        self.image_ori = img_meteorite
         self.p = rd.randrange(6,15)
-        self.image = pg.transform.scale(self.image,(5*self.p,4*self.p))
-        self.image.set_colorkey(WHITE)
+        self.image_ori = pg.transform.scale(self.image_ori,(5*self.p,4*self.p))
+        self.image_ori.set_colorkey(WHITE)
+        self.image = self.image_ori.copy()
         self.rect = self.image.get_rect()
         self.initializeParameter()
-        self.radius = self.rect.width/2
-        pg.draw.circle(self.image, BLUE, self.rect.center, self.radius)
+        self.totalDegree = 0
+        self.degree = rd.randrange(-5,5)
     def initializeParameter(self):
         self.rect = self.image.get_rect()
         self.rect.x = rd.randrange(0,WIDTH - self.rect.width)
         self.rect.y = rd.randrange(-100,-60)
         self.speedx = rd.randrange(-5,5)
         self.speedy = rd.randrange(4,10)
-
+    def rotate(self):
+        self.totalDegree += self.degree
+        self.totalDegree %= 360
+        self.image = pg.transform.rotate(self.image_ori, self.totalDegree)
+        center = self.rect.center
+        self.rect = self.image.get_rect()
+        self.rect.center = center
     def update(self):
+        self.rotate()
         if self.rect.top > HEIGHT:
             self.initializeParameter()
         if self.rect.left <= 0 or self.rect.right > WIDTH:
@@ -117,12 +125,12 @@ while running:
                 ship.shoot()
 
     collides = pg.sprite.groupcollide(bullets, meteorites, True, True)
-    for i in range(0,len(collides)):
+    while meteorites.__len__() < 8:
         m = Meteorite()
         all_sprite.add(m)
         meteorites.add(m)
 
-    # collides = pg.sprite.spritecollide(ship, meteorites, True, pg.sprite.collide_circle)
+    collides = pg.sprite.spritecollide(ship, meteorites, True, pg.sprite.collide_circle)
     # if collides:
     #     running = False
     
