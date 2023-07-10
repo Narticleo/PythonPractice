@@ -4,7 +4,7 @@ HEIGHT = 600
 WIDTH = 500
 SIZE = (WIDTH,HEIGHT)
 BLACK = (0,0,0)
-BROWN = (112,66,20)
+BROWN = (255,77,0)
 GOLDEN = (255,215,0)
 BACKGROUND = (30, 144, 255)
 FPS = 60
@@ -14,6 +14,9 @@ screen = pg.display.set_mode(SIZE)
 pg.display.set_caption("testing")
 clock = pg.time.Clock()
 all_sprite = pg.sprite.Group()
+meteorites = pg.sprite.Group()
+bullets = pg.sprite.Group()
+
 #class Battleship
 class Battleship(pg.sprite.Sprite):
     def __init__(self):
@@ -38,20 +41,23 @@ class Battleship(pg.sprite.Sprite):
     def shoot(self):
         bullet = Bullet(self.rect.centerx,self.rect.top)
         all_sprite.add(bullet)
+        bullets.add(bullet)
+
 #class bullet
 class Bullet(pg.sprite.Sprite):
     def __init__(self,startx,starty):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((8,15))
-        self.image.fill(BLACK)
+        self.image.fill(GOLDEN)
         self.rect = self.image.get_rect()
-        self.speedy = -5
         self.rect.centerx = startx
-        self.rect.bottom = starty+3
+        self.rect.bottom = starty + 3
+        self.speedy = -10
     def update(self):
-        if self.rect.bottom < 0: 
-            self.kill()
         self.rect.y += self.speedy
+        if self.rect.bottom < 0:
+            self.kill()
+
 #class Meteorite    
 class Meteorite(pg.sprite.Sprite):
     def __init__(self):
@@ -82,6 +88,7 @@ all_sprite.add(ship)
 for i in range(7):
     meteorite = Meteorite()
     all_sprite.add(meteorite)
+    meteorites.add(meteorite)
 
 running = True
 while running:
@@ -90,8 +97,18 @@ while running:
         if event.type == pg.QUIT:
             running = False
         elif event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE:
+            if event.key == pg.K_LSHIFT:
                 ship.shoot()
+
+    collides = pg.sprite.groupcollide(bullets, meteorites, True, True)
+    for i in range(0,len(collides)):
+        m = Meteorite()
+        all_sprite.add(m)
+        meteorites.add(m)
+
+    collides = pg.sprite.spritecollide(ship, meteorites, True)
+    if collides:
+        running = False
     
     all_sprite.update()
     screen.fill(BACKGROUND)
