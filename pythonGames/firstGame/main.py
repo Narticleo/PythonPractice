@@ -36,6 +36,8 @@ class Battleship(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx = WIDTH/2
         self.rect.centery = HEIGHT - self.rect.height/2 - 10
+        self.radius = 20
+        pg.draw.circle(self.image, BLUE, self.rect.center, self.radius)
         self.speedx = 10
         self.speedy = 10
     def update(self):
@@ -53,6 +55,33 @@ class Battleship(pg.sprite.Sprite):
         all_sprite.add(bullet)
         bullets.add(bullet)
 
+#class Meteorite    
+class Meteorite(pg.sprite.Sprite):
+    def __init__(self):
+        pg.sprite.Sprite.__init__(self)
+        self.image = img_meteorite
+        self.p = rd.randrange(6,15)
+        self.image = pg.transform.scale(self.image,(5*self.p,4*self.p))
+        self.image.set_colorkey(WHITE)
+        self.rect = self.image.get_rect()
+        self.initializeParameter()
+        self.radius = self.rect.width/2
+        pg.draw.circle(self.image, BLUE, self.rect.center, self.radius)
+    def initializeParameter(self):
+        self.rect = self.image.get_rect()
+        self.rect.x = rd.randrange(0,WIDTH - self.rect.width)
+        self.rect.y = rd.randrange(-100,-60)
+        self.speedx = rd.randrange(-5,5)
+        self.speedy = rd.randrange(4,10)
+
+    def update(self):
+        if self.rect.top > HEIGHT:
+            self.initializeParameter()
+        if self.rect.left <= 0 or self.rect.right > WIDTH:
+            self.speedx *= -1
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
+
 #class bullet
 class Bullet(pg.sprite.Sprite):
     def __init__(self,startx,starty):
@@ -69,34 +98,6 @@ class Bullet(pg.sprite.Sprite):
         self.rect.y += self.speedy
         if self.rect.bottom < 0:
             self.kill()
-
-#class Meteorite    
-class Meteorite(pg.sprite.Sprite):
-    def __init__(self):
-        pg.sprite.Sprite.__init__(self)
-        # self.image = pg.Surface((50,40))
-        self.image = img_meteorite
-        self.p = rd.randrange(6,15)
-        self.image = pg.transform.scale(self.image,(5*self.p,4*self.p))
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.initializeParameter()
-    def initializeParameter(self):
-        self.rect = self.image.get_rect()
-        self.rect.x = rd.randrange(0,WIDTH - self.rect.width)
-        self.rect.y = rd.randrange(-100,-60)
-        self.speedx = rd.randrange(-5,5)
-        self.speedy = rd.randrange(4,10)
-
-    def update(self):
-        if self.rect.top > HEIGHT:
-            self.initializeParameter()
-        if self.rect.left <= 0 or self.rect.right > WIDTH:
-            self.speedx *= -1
-        self.rect.x += self.speedx
-        self.rect.y += self.speedy
-
-
 
 ship = Battleship()
 all_sprite.add(ship)
@@ -121,12 +122,11 @@ while running:
         all_sprite.add(m)
         meteorites.add(m)
 
-    # collides = pg.sprite.spritecollide(ship, meteorites, True)
+    # collides = pg.sprite.spritecollide(ship, meteorites, True, pg.sprite.collide_circle)
     # if collides:
     #     running = False
     
     all_sprite.update()
-    # screen.fill(img_background)
     screen.blit(img_background,(0,0))
     all_sprite.draw(screen)
     pg.display.update()
