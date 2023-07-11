@@ -1,5 +1,6 @@
 import pygame as pg
 import random as rd
+from PIL import Image
 import os
 HEIGHT = 600
 WIDTH = 500
@@ -14,12 +15,21 @@ FPS = 60
 pg.init()
 screen = pg.display.set_mode(SIZE)
 pg.display.set_caption("testing")
+
 #load imgs
 img_background = pg.image.load(os.path.join("imgs","background.jpg")).convert()
 img_background = pg.transform.scale(img_background,(500,600))
 img_ship = pg.image.load(os.path.join("imgs","ship.jpg")).convert()
-img_meteorite = pg.image.load(os.path.join("imgs","meteorite.jpg")).convert()
 img_bullet = pg.image.load(os.path.join("imgs","bullet.png")).convert()
+img_meteorites = []
+for i in range(2):
+    img_meteorites.append(pg.image.load(os.path.join("imgs", f"meteorite{i}.png")).convert())
+for i in range(2,6):
+    img_meteorites.append(pg.image.load(os.path.join("imgs", f"meteorite{i}.jpg")).convert())
+img_meteorites.append(pg.image.load(os.path.join("imgs", "meteorite6.webp")).convert())
+
+
+
 
 clock = pg.time.Clock()
 all_sprite = pg.sprite.Group()
@@ -59,10 +69,11 @@ class Battleship(pg.sprite.Sprite):
 class Meteorite(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
-        self.image_ori = img_meteorite
+        self.image_ori = rd.choice(img_meteorites)
         self.p = rd.randrange(6,15)
         self.image_ori = pg.transform.scale(self.image_ori,(5*self.p,4*self.p))
-        self.image_ori.set_colorkey(WHITE)
+        pix = self.image_ori.get_at([0,0])
+        self.image_ori.set_colorkey(pix)
         self.image = self.image_ori.copy()
         self.rect = self.image.get_rect()
         self.initializeParameter()
