@@ -22,7 +22,7 @@ ship = pg.image.load("ship.jpg").convert()
 pix = ship.get_at([0,0])[0:3]
 print(pix)
 
-pg.Surface.get_at([0,0])
+print(pg.Surface.get_at([0,0]))
 
 
 
