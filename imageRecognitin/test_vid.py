@@ -1,6 +1,6 @@
 import cv2 
 
-cap = cv2.VideoCapture('althea_vid.mp4')
+cap = cv2.VideoCapture(0)
 
 
 done = False

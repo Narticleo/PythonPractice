@@ -1,9 +1,11 @@
 import cv2
-althea = cv2.imread("althea.jpg")
-inoue = cv2.imread("inoueTakina.jpg")
-althea = cv2.resize(althea, (0,0), fx = 0.15, fy = 0.15)
-inoue = cv2.resize(inoue, (0,0), fx = 0.5, fy = 0.5)
+import numpy as np
 
-img = althea[:althea.shape[0]][:althea.shape[1]]
-cv2.imshow("althea",img)
+color = np.zeros((300,300,3), np.uint8)
+
+for i in range(300):
+    for j in range(300):
+        color[i][j] = [195, 0, 255]
+
+cv2.imshow('color',color)
 cv2.waitKey(0)
