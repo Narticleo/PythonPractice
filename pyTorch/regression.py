@@ -12,11 +12,9 @@ y = x.sin() + 0.3*x.pow(3) + 0.8*(x**2)+ 150*torch.rand(x.size())
 class NET(torch.nn.Module):
     def __init__(self, n_feature, n_hidden, n_output):
         super(NET, self).__init__()
-        self.net = torch.nn.Sequential(
-            torch.nn.Linear(n_feature, n_hidden, bias = True),
-            torch.nn.Relu(),
-            torch.nn.Linear(n_hidden, n_output)
-        )
+        self.hidden = torch.nn.Linear(n_feature, n_hidden, bias = True)
+        self.predict = torch.nn.Linear(n_hidden, n_output)
+
     def forward(self, x):
         x = nnf.relu(self.hidden(x))
         x = self.predict(x)
